@@ -1,7 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
-import logging
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -25,7 +24,6 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        logging.info(f'Registration attempt with username: {username} and password: {password}')
         # Vulnerable SQL handling here
         sql = f"SELECT * FROM user WHERE username = '{username}' AND password = '{password}'"
         connection = db.engine.raw_connection()  # Get a raw connection
@@ -47,7 +45,6 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        logging.info(f'Login attempt with username: {username} and password: {password}')
         new_user = User(username=username, password=password)
         db.session.add(new_user)
         db.session.commit()
