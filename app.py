@@ -29,9 +29,15 @@ def login():
 # Register route
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    flash('Registration is disabled.')
-    return redirect(url_for('login'))
-
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+        flash('Registration successful!')
+        return redirect(url_for('login'))
+    else:
+        return render_template('register.html')
 
 # Dashboard route
 @app.route('/dashboard')
