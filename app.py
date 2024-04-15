@@ -7,9 +7,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# Setup logging
-logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -32,7 +29,6 @@ def login():
         result = cursor.fetchone()  # Fetch the first result
         cursor.close()  # Close the cursor
         connection.close()  # Close the connection
-
 
         if result:
             return 'Logged in successfully!'
