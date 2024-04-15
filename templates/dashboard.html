@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Adding Bootstrap for better styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Welcome, {{ username }}!</h1>
+        <form action="/add_post" method="post">
+            <div class="form-group">
+                <label for="blogTitle">Title</label>
+                <input type="text" class="form-control" id="blogTitle" name="blog_title" placeholder="Enter post title"
+                    required>
+            </div>
+            <div class="form-group">
+                <label for="blogContent">Content</label>
+                <textarea class="form-control" id="blogContent" name="blog_content"
+                    placeholder="Write your blog post here..." rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Post</button>
+        </form>
+        <div class="mt-4">
+            <!-- Looping through posts -->
+            {% for post in posts %}
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h3 class="card-title">{{ post.title }}</h3>
+                    <p class="card-text">{{ post.content }}</p>
+                    <a href="/edit_post/{{ post.id }}" class="btn btn-secondary">Edit</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- Including Bootstrap JS and Popper.js for complete Bootstrap functionality -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>
