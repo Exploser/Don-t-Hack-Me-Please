@@ -16,6 +16,10 @@ class User(db.Model):
 def index():
     return render_template('login.html')
 
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -31,7 +35,7 @@ def login():
         connection.close()  # Close the connection
 
         if result:
-            return 'Logged in successfully!'
+             return redirect(url_for('dashboard'))
         else:
             return 'Failure to login!'
     return render_template('login.html')
