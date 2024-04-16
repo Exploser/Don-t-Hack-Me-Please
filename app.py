@@ -1,16 +1,20 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, session, render_template
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 
 app = Flask(__name__)
+app.secret_key = 'your_very_secret_key_here'  
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 class User(db.Model):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
+    role = db.Column(db.Text, default='user')
+
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -36,7 +40,14 @@ def login():
         connection.close()
 
         if result:
-             return redirect(url_for('dashboard'))
+            # Check the user's role to determine redirection
+            user = User.query.filter_by(username=username).first()  # This query assumes the user exists and is unique
+            if user.role == 'admin':
+                session['is_admin'] = True  # Set a session variable indicating this is an admin user
+                return redirect(url_for('admin'))
+            else:
+                session['is_admin'] = False
+                return redirect(url_for('dashboard'))
         else:
             return 'Failure to login!'
     return render_template('login.html')
