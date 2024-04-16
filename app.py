@@ -11,6 +11,11 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)
+    
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
 
 @app.route('/')
 def index():
@@ -66,5 +71,9 @@ def blog():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+        # Add sample blog post if table is empty
+        if not Post.query.first():
+            post1 = Post(title="Sample Post", content="This is a sample blog post content.")
+            db.session.add(post1)
+            db.session.commit()
     app.run(debug=True)
-
