@@ -42,14 +42,16 @@ def login():
         connection.close()
 
         if result:
-            # Check the user's role to determine redirection
-            user = User.query.filter_by(username=username).first()  # This query assumes the user exists and is unique
-            if user.role == 'admin':
-                session['is_admin'] = True  # Set a session variable indicating this is an admin user
+            # Convert the row to a dictionary to easily access columns by name
+            user = dict(zip([column[0] for column in cursor.description], result))
+            if user and user['role'] == 'admin':  # Check if user is not None and then check role
+                session['is_admin'] = True
                 return redirect(url_for('dashboard'))
-            else:
+            elif user:
                 session['is_admin'] = False
                 return redirect(url_for('dashboard'))
+            else:
+                return 'Failure to login! User not found.'
         else:
             return 'Failure to login!'
     return render_template('login.html')
