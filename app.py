@@ -51,6 +51,18 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html')
 
+@app.route('/blog')
+def blog():
+    # Insecurely displaying all posts, assuming they are public
+    sql = "SELECT * FROM post"  # Insecure SQL query with potential for SQL injection if modified
+    connection = db.engine.raw_connection()
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    posts = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return render_template('blog.html', posts=posts)
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
