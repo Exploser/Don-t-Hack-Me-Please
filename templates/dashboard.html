@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,18 +9,27 @@
     <!-- Adding Bootstrap for better styling -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
+
 <body>
     <div class="container mt-5">
         <h1 class="mb-4">Welcome, {{ username }}!</h1>
+
+        <!-- Admin Panel Button, visible only to admins -->
+        {% if session['is_admin'] %}
+        <a href="{{ url_for('admin') }}" class="btn btn-warning mb-4">Admin Panel</a>
+        {% endif %}
+
         <a href="/blog" class="btn btn-info mb-4">View Blog Posts</a>
         <form action="/add_post" method="post">
             <div class="form-group">
                 <label for="blogTitle">Title</label>
-                <input type="text" class="form-control" id="blogTitle" name="blog_title" placeholder="Enter post title" required>
+                <input type="text" class="form-control" id="blogTitle" name="blog_title" placeholder="Enter post title"
+                    required>
             </div>
             <div class="form-group">
                 <label for="blogContent">Content</label>
-                <textarea class="form-control" id="blogContent" name="blog_content" placeholder="Write your blog post here..." rows="4" required></textarea>
+                <textarea class="form-control" id="blogContent" name="blog_content"
+                    placeholder="Write your blog post here..." rows="4" required></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Post</button>
         </form>
@@ -41,4 +51,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
+
 </html>

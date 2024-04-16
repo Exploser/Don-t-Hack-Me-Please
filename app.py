@@ -1,6 +1,8 @@
 from flask import Flask, request, render_template, redirect, url_for, session, render_template
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
+import sqlite3
+
 
 app = Flask(__name__)
 app.secret_key = 'your_very_secret_key_here'  
@@ -44,7 +46,7 @@ def login():
             user = User.query.filter_by(username=username).first()  # This query assumes the user exists and is unique
             if user.role == 'admin':
                 session['is_admin'] = True  # Set a session variable indicating this is an admin user
-                return redirect(url_for('admin'))
+                return redirect(url_for('dashboard'))
             else:
                 session['is_admin'] = False
                 return redirect(url_for('dashboard'))
@@ -69,10 +71,46 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html')
 
+
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    username = request.form['username']
+    password = request.form['password']
+    role = request.form['role']
+    new_user = User(username=username, password=password, role=role)
+    db.session.add(new_user)
+    db.session.commit()
+    return redirect(url_for('dashboard'))
+
+
+@app.route('/remove_user', methods=['POST'])
+def remove_user():
+    username = request.form['username']
+    user_to_delete = User.query.filter_by(username=username).first()
+    if user_to_delete:
+        db.session.delete(user_to_delete)
+        db.session.commit()
+        return redirect(url_for('admin'))
+    else:
+        return "User not found", 404
+
+@app.route('/update_role', methods=['POST'])
+def update_role():
+    username = request.form['username']
+    new_role = request.form['role']
+    with sqlite3.connect('database.db') as conn:
+        cur = conn.cursor()
+        cur.execute("UPDATE user SET role = ? WHERE username = ?", (new_role, username))
+        conn.commit()
+    return redirect('/admin.html')
+
 @app.route('/admin')
 def admin():
-    # Insecure Admin Page: Accessible without authentication
-    return "Welcome to the Admin Page! This page is insecurely accessible without authentication."
+    users = User.query.all()
+    print(users)  # This should output user objects if there are any in the database
+    return render_template('admin.html', users=users)
+
+
 
 @app.route('/blog')
 def blog():

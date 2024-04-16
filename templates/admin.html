@@ -1,12 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
+
 <body>
-    <h1>Welcome to the Admin Panel</h1>
-    <p>This page is supposed to be secret!</p>
+    <div class="container">
+        <h1 class="mt-5 mb-4">Welcome to the Admin Panel</h1>
+        <p class="warning">This page is supposed to be secret!</p>
+
+        <!-- User Display Section -->
+        <h2 class="mt-4 mb-3">Existing Users</h2>
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>
+                        <!-- Remove User Form -->
+                        <form action="/remove_user" method="post">
+                            <input type="hidden" name="username" value="{{ user.username }}">
+                            <input type="submit" value="Remove" class="btn btn-danger">
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Add User Form -->
+        <form action="/add_user" method="post" class="mb-5">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Add User</h2>
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Role:</label>
+                        <select id="role" name="role" class="form-control">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+
+                    <input type="submit" value="Add User" class="btn btn-primary">
+                </div>
+            </div>
+        </form>
+
+    </div>
 </body>
+
 </html>
